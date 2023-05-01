@@ -10,7 +10,7 @@ interface dataObjUpdate {
   isDone?: boolean
 }
 
-class Fetch {
+export class Fetch {
   static BASE_URL: string = "http://localhost:8000/tasks";
   static async getAll() {
     const response: Response = await fetch("http://localhost:8000/tasks");
@@ -70,6 +70,6 @@ class Fetch {
       );
     }
   }
-}
+};
 
-module.exports = Fetch;
+// module.exports = Fetch;

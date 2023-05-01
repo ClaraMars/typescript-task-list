@@ -1,5 +1,4 @@
-const fetch2 = require("./Fetch");
-// import { Fetch } from "./Fetch";
+import { Fetch } from "./Fetch";
 
 interface dataObj {
   id: string,
@@ -7,7 +6,7 @@ interface dataObj {
   done: boolean
 }
 
-class App {
+export class App {
 
   alert: HTMLElement | null;
   close: HTMLElement | null;
@@ -185,4 +184,4 @@ class App {
   }
 };
 
-module.exports = App;
+// module.exports = App;
