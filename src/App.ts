@@ -1,17 +1,5 @@
-import { Fetch } from "./Fetch";
-
-
-// interface events {
-//   click: MouseEvent,
-//   input: InputEvent,
-//   blur: FocusEvent;
-//   focus: FocusEvent;
-//   change: Event;
-//   submit: Event;
-//   keydown: KeyboardEvent;
-//   keyup: KeyboardEvent;
-//   load: Event;
-// };
+const fetch2 = require("./Fetch");
+// import { Fetch } from "./Fetch";
 
 interface dataObj {
   id: string,
@@ -19,7 +7,7 @@ interface dataObj {
   done: boolean
 }
 
-export class App {
+class App {
 
   alert: HTMLElement | null;
   close: HTMLElement | null;
@@ -195,4 +183,6 @@ export class App {
    // generate random hex string
     return Math.floor(Math.random() * 16777215).toString(16);
   }
-}
+};
+
+module.exports = App;
