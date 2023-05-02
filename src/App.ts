@@ -8,10 +8,10 @@ interface dataObj {
 
 export class App {
 
-  alert: HTMLElement | null;
-  close: HTMLElement | null;
+  alert: HTMLDivElement | null;
+  close: HTMLSpanElement | null;
   input: HTMLInputElement | null;
-  arrow: HTMLElement | null;
+  arrow: HTMLDivElement | null;
   table: HTMLTableSectionElement | null;
   
 
