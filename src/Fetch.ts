@@ -40,8 +40,10 @@ export class Fetch {
         `Error al crear la tarea: ${response.status} ${response.statusText}`
       );
     }
-    const data: dataObj = await response.json(); //Devuelve solo un objeto
-    return data;
+
+    Fetch.getAll();
+    // const data: dataObj = await response.json(); //Devuelve solo un objeto
+    // return data;
   }
 
   //Tipado parcial para actualizar solo ciertos campos
@@ -59,7 +61,9 @@ export class Fetch {
       );
     }
     const data: dataObj = await response.json();
-    return data;
+    // return data;
+    return this.getAll();
+    
   }
 
   //Eliminación de filas
