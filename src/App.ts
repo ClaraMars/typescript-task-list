@@ -1,10 +1,10 @@
-import { Fetch } from "./Fetch";
+import { Fetch, dataObj } from "./Fetch.js";
 
-interface dataObj {
-  id: string,
-  title: string,
-  done: boolean
-}
+// interface dataObj {
+//   id: string,
+//   title: string,
+//   done: boolean
+// }
 
 export class App {
 
@@ -30,32 +30,32 @@ export class App {
       this.alert?.classList.add("dismissible");
     });
     //Impedir la recarga de la página y añadir una nueva tarea
-    this.input?.addEventListener("keydown", (e: KeyboardEvent) => {
+    this.input?.addEventListener("keydown", (e: KeyboardEvent): void => {
       if (e.code == "Enter" || e.code == "NumpadEnter") {
         e.preventDefault();
         this.addTask(this.input, this.idGenerator(), this.input!.value, this.alert);
       }
     });
-    this.input?.addEventListener("input", () => {
+    this.input?.addEventListener("input", (): void => {
       if (this.input?.value !== "" && !this.alert?.classList.contains("dismissible")) {
         this.alert?.classList.add("dismissible");
       }
     });
     //Añadir una nueva tarea
-    this.arrow?.addEventListener("click", () => {
+    this.arrow?.addEventListener("click", (): void => {
       this.addTask(this.input, this.idGenerator(), this.input!.value, this.alert);
     });
     // Fetch all tasks
-    let tasks = await Fetch.getAll();
+    let tasks: dataObj[] = await Fetch.getAll();
     // Render all tasks
-    this.renderTasks(tasks as any);
+    this.renderTasks(tasks);
   };
 
   // //prepara una plantilla HTML, y la actualiza con contenido dinámico
-  generateRow = (id: string, title: string, done?: boolean): HTMLTableRowElement => {
+  generateRow = (id: string, title: string, isDone?: boolean): HTMLTableRowElement => {
     let newRow: HTMLTableRowElement = document.createElement("tr");
     newRow.setAttribute("id", id);
-    title = done? `<del>${title}</del>` : title;
+    title = isDone? `<del>${title}</del>` : title;
     newRow.innerHTML = `
     <td>
       <i class="fa-solid fa-circle-check"></i>
@@ -106,7 +106,7 @@ export class App {
   renderTasks = (tasks: dataObj[]): void => {
     console.log(tasks.length);
     tasks.forEach((task: dataObj) => {
-      this.table?.appendChild(this.generateRow(task.id, task.title, task.done));
+      this.table?.appendChild(this.generateRow(task.id, task.title, task.isDone)); //Modificado done por isDone
     });
   };
   // //Tachado de tarea
@@ -125,12 +125,12 @@ export class App {
     }
   };
   //Añadir nueva tarea
-  addTask = (input: HTMLInputElement | null, id: string, text: string, alert: HTMLElement | null): void => {
+  addTask = (input: HTMLInputElement | null, id: string, text: string, alert: HTMLDivElement | null): void => {
     if (input?.value.trim() === "") {
       input.value = "";
       alert?.classList.remove("dismissible");
     } else {
-      text = input!.value;
+      text = input!.value; //Operador de aserción no nulo para asegurar que no es null
       id = this.idGenerator();
       document.querySelector("tbody")?.appendChild(this.generateRow(this.idGenerator(), this.input!.value));
       input!.value = "";
@@ -138,11 +138,11 @@ export class App {
   };
   //Modo Edición
   editModeOn = (e: Event, onFocus: boolean): void => {
-    let task: HTMLElement;
+    let task: HTMLSpanElement;
     if (onFocus) {
-      task = e.currentTarget as HTMLElement;
+      task = e.currentTarget as HTMLSpanElement;
     } else {
-      task = ((((e.currentTarget as HTMLElement).parentNode as HTMLElement).parentNode as HTMLElement).previousElementSibling as HTMLElement).lastElementChild as HTMLElement;
+      task = ((((e.currentTarget as HTMLElement).parentNode as HTMLSpanElement).parentNode as HTMLTableCellElement).previousElementSibling as HTMLTableCellElement).lastElementChild as HTMLSpanElement;
       task.focus();
     }
     // console.log(task);
@@ -154,7 +154,7 @@ export class App {
     });
   };
   editModeOff = (e: Event): void => {
-    let task = e.currentTarget as HTMLElement;
+    let task = e.currentTarget as HTMLSpanElement;
     if (task?.innerHTML === "") {
       this.removeRow(e, true);
     } else {
@@ -168,10 +168,10 @@ export class App {
   //Eliminación de tarea
   removeRow = (e: Event, editionMode: boolean): void => {
     if (editionMode) {
-      (((e.target as HTMLElement).parentNode as HTMLElement).parentNode as HTMLElement).remove();
+      (((e.target as HTMLSpanElement).parentNode as HTMLTableCellElement).parentNode as HTMLTableRowElement).remove();
     } else {
       // console.log(e.target.parentNode.parentNode.parentNode);
-      ((((e.target as HTMLElement).parentNode as HTMLElement).parentNode as HTMLElement).parentNode as HTMLElement).remove();
+      ((((e.target as HTMLElement).parentNode as HTMLSpanElement).parentNode as HTMLTableCellElement).parentNode as HTMLTableRowElement).remove();
     }
   };
   //Eliminación de espacios en blanco
