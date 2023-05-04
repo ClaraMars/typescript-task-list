@@ -1,4 +1,4 @@
-import { Fetch, dataObj } from "./Fetch.js";
+import { Fetch, dataObj, dataObjUpdate } from "./Fetch.js";
 
 // interface dataObj {
 //   id: string,
@@ -24,16 +24,23 @@ export class App {
   };
 
   init = async () => {
+    // Fetch all tasks
+    let tasks: dataObj[] = await Fetch.getAll();
+    // Render all tasks
+    this.renderTasks(tasks);
+
     //eventos
     //Cerrar la alerta en el botón con la X
     this.close?.addEventListener("click", () => {
       this.alert?.classList.add("dismissible");
     });
     //Impedir la recarga de la página y añadir una nueva tarea
-    this.input?.addEventListener("keydown", (e: KeyboardEvent): void => {
+    this.input?.addEventListener("keydown", async (e: KeyboardEvent): Promise<void> => {
       if (e.code == "Enter" || e.code == "NumpadEnter") {
         e.preventDefault();
         this.addTask(this.input, this.idGenerator(), this.input!.value, this.alert);
+        let createTask: dataObj = await Fetch.create({id: this.idGenerator(), title: this.input!.value, isDone: false});
+        this.renderTasks([createTask]);
       }
     });
     this.input?.addEventListener("input", (): void => {
@@ -42,16 +49,15 @@ export class App {
       }
     });
     //Añadir una nueva tarea
-    this.arrow?.addEventListener("click", (): void => {
+    this.arrow?.addEventListener("click", async (): Promise<void> => {
       this.addTask(this.input, this.idGenerator(), this.input!.value, this.alert);
+      let createTask: dataObj = await Fetch.create({id: this.idGenerator(), title: this.input!.value, isDone: false});
+      this.renderTasks([createTask]);
     });
-    // Fetch all tasks
-    let tasks: dataObj[] = await Fetch.getAll();
-    // Render all tasks
-    this.renderTasks(tasks);
+
   };
 
-  // //prepara una plantilla HTML, y la actualiza con contenido dinámico
+  //Prepara una plantilla HTML, y la actualiza con contenido dinámico
   generateRow = (id: string, title: string, isDone?: boolean): HTMLTableRowElement => {
     let newRow: HTMLTableRowElement = document.createElement("tr");
     newRow.setAttribute("id", id);
@@ -79,8 +85,15 @@ export class App {
         this.crossOut(e as MouseEvent);
       });
     //Activar el modo edición desde la tarea
-    newRow.firstElementChild?.lastElementChild?.addEventListener("focus", (e: Event) => {
+    newRow.firstElementChild?.lastElementChild?.addEventListener("focus", async (e: Event) => {
       this.editModeOn(e as FocusEvent, true);
+
+      // let update: dataObj = dataObjtitle;
+      // let updateTask: dataObjUpdate = await Fetch.update({id: this.idGenerator()}); 
+      // if (update !== updateTask.title) {
+      //   // let updateTask: dataObjUpdate = await Fetch.update({id: this.idGenerator()});
+      //   this.renderTasksUpdate([updateTask]);
+      // }
     });
     //Desactivar el modo edición
     newRow.firstElementChild?.lastElementChild?.addEventListener("blur", (e: Event) => {
@@ -96,8 +109,10 @@ export class App {
     //Eliminar la fila
     newRow.lastElementChild?.firstElementChild?.lastElementChild?.addEventListener(
       "click",
-      (e: Event) => {
+      async (e: Event) => {
         this.removeRow(e as MouseEvent, false);
+        //let removeTask: dataObj = await Fetch.delete({id: this.idGenerator()});
+        //this.renderTasks([removeTask]);
       }
     );
     return newRow;
@@ -107,6 +122,13 @@ export class App {
     console.log(tasks.length);
     tasks.forEach((task: dataObj) => {
       this.table?.appendChild(this.generateRow(task.id, task.title, task.isDone)); //Modificado done por isDone
+    });
+  };
+
+  renderTasksUpdate = (tasks: dataObjUpdate[]): void => {
+    console.log(tasks.length);
+    tasks.forEach((task: dataObjUpdate) => {
+      this.table?.appendChild(this.generateRow(task.id, task.title!, task.isDone)); //Modificado done por isDone
     });
   };
   // //Tachado de tarea
@@ -133,7 +155,7 @@ export class App {
       text = input!.value; //Operador de aserción no nulo para asegurar que no es null
       id = this.idGenerator();
       document.querySelector("tbody")?.appendChild(this.generateRow(this.idGenerator(), this.input!.value));
-      input!.value = "";
+      //input!.value = ""; //Volver a añadir, resetea el input (ahora se resetea por la recarga de la página)
     }
   };
   //Modo Edición
@@ -166,11 +188,10 @@ export class App {
     }
   };
   //Eliminación de tarea
-  removeRow = (e: Event, editionMode: boolean): void => {
+  removeRow = (e: Event, editionMode: boolean) => {
     if (editionMode) {
       (((e.target as HTMLSpanElement).parentNode as HTMLTableCellElement).parentNode as HTMLTableRowElement).remove();
     } else {
-      // console.log(e.target.parentNode.parentNode.parentNode);
       ((((e.target as HTMLElement).parentNode as HTMLSpanElement).parentNode as HTMLTableCellElement).parentNode as HTMLTableRowElement).remove();
     }
   };
@@ -183,5 +204,3 @@ export class App {
     return Math.floor(Math.random() * 16777215).toString(16);
   }
 };
-
-// module.exports = App;

@@ -40,15 +40,13 @@ export class Fetch {
         `Error al crear la tarea: ${response.status} ${response.statusText}`
       );
     }
-
-    Fetch.getAll();
-    // const data: dataObj = await response.json(); //Devuelve solo un objeto
-    // return data;
+    const data: dataObj = await response.json(); //Devuelve solo un objeto
+    return data;
   }
 
   //Tipado parcial para actualizar solo ciertos campos
   static async update(task: dataObjUpdate) {
-    const response: Response = await fetch(`${this.BASE_URL}${task.id}`, { //Actualiza el db.json
+    const response: Response = await fetch(`${this.BASE_URL}/${task.id}`, { //Actualiza el db.json
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -60,15 +58,13 @@ export class Fetch {
         `Error al actualizar la tarea: ${response.status} ${response.statusText}`
       );
     }
-    const data: dataObj = await response.json();
-    // return data;
-    return this.getAll();
-    
+    const data: dataObjUpdate = await response.json();
+    return data;
   }
 
   //Eliminación de filas
   static async delete(id: string) {
-    const response: Response = await fetch(`${this.BASE_URL}${id}`, {
+    const response: Response = await fetch(`${this.BASE_URL}/${id}`, {
       method: "DELETE", //
     });
     if (!response.ok) {
@@ -78,5 +74,3 @@ export class Fetch {
     }
   }
 };
-
-// module.exports = Fetch;
