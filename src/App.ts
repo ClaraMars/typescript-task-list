@@ -111,8 +111,8 @@ export class App {
       "click",
       async (e: Event) => {
         this.removeRow(e as MouseEvent, false);
-        //let removeTask: dataObj = await Fetch.delete({id: this.idGenerator()});
-        //this.renderTasks([removeTask]);
+        let removeTask: dataObj = await Fetch.delete({id: this.idGenerator(), title: this.input!.value, isDone: false || true});
+        this.renderTasks([removeTask]);
       }
     );
     return newRow;
