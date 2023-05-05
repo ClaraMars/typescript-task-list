@@ -3,7 +3,7 @@
     {
       "id": "597a333eaf3ff85c",
       "title": "necessitatibus itaque sit",
-      "isDone": false
+      "isDone": true
     },
     {
       "id": "a53e99842b559f22",
@@ -23,7 +23,7 @@
     {
       "id": "c106e048ab288f86",
       "title": "dicta deserunt distinctio",
-      "isDone": false
+      "isDone": true
     },
     {
       "id": "a966d26c8c4b3fc2",
@@ -33,52 +33,17 @@
     {
       "id": "4259773c205c190e",
       "title": "ratione architecto eius",
-      "isDone": false
+      "isDone": true
     },
     {
       "id": "ac7a6276f942f8d0",
       "title": "sint consequuntur possimus",
-      "isDone": true
+      "isDone": false
     },
     {
       "id": "333759ccc4435cdf",
       "title": "voluptates numquam quia",
-      "isDone": false
-    },
-    {
-      "id": "ee78b7",
-      "title": "",
-      "isDone": false
-    },
-    {
-      "id": "3570fe",
-      "title": "",
-      "isDone": false
-    },
-    {
-      "id": "7d2773",
-      "title": "xxf",
-      "isDone": false
-    },
-    {
-      "id": "f7e17c",
-      "title": "dddd",
-      "isDone": false
-    },
-    {
-      "id": "cce77b",
-      "title": "vcvcvcvc",
-      "isDone": false
-    },
-    {
-      "id": "245da7",
-      "title": "dsggfd",
-      "isDone": false
-    },
-    {
-      "id": "8ba7d0",
-      "title": "cv",
-      "isDone": false
+      "isDone": true
     }
   ]
 }

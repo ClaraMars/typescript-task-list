@@ -24,16 +24,13 @@ export class App {
   };
 
   init = async () => {
-    // Fetch all tasks
-    let tasks: dataObj[] = await Fetch.getAll();
-    // Render all tasks
-    this.renderTasks(tasks);
+    //EVENTOS
 
-    //eventos
     //Cerrar la alerta en el botón con la X
     this.close?.addEventListener("click", () => {
       this.alert?.classList.add("dismissible");
     });
+
     //Impedir la recarga de la página y añadir una nueva tarea
     this.input?.addEventListener("keydown", async (e: KeyboardEvent): Promise<void> => {
       if (e.code == "Enter" || e.code == "NumpadEnter") {
@@ -43,11 +40,7 @@ export class App {
         this.renderTasks([createTask]);
       }
     });
-    this.input?.addEventListener("input", (): void => {
-      if (this.input?.value !== "" && !this.alert?.classList.contains("dismissible")) {
-        this.alert?.classList.add("dismissible");
-      }
-    });
+    
     //Añadir una nueva tarea
     this.arrow?.addEventListener("click", async (): Promise<void> => {
       this.addTask(this.input, this.idGenerator(), this.input!.value, this.alert);
@@ -55,6 +48,17 @@ export class App {
       this.renderTasks([createTask]);
     });
 
+    //Tarea vacía alerta roja
+    this.input?.addEventListener("input", (): void => {
+      if (this.input?.value !== "" && !this.alert?.classList.contains("dismissible")) {
+        this.alert?.classList.add("dismissible");
+      }
+    });
+
+    // Fetch all tasks
+    let tasks: dataObj[] = await Fetch.getAll();
+    // Render all tasks
+    this.renderTasks(tasks);
   };
 
   //Prepara una plantilla HTML, y la actualiza con contenido dinámico
@@ -81,8 +85,9 @@ export class App {
     </td>
       `;
     //Tachar una tarea realizada
-    newRow.firstElementChild?.firstElementChild?.addEventListener("click", (e: Event) => {
+    newRow.firstElementChild?.firstElementChild?.addEventListener("click", async (e: Event) => {
         this.crossOut(e as MouseEvent);
+        await Fetch.update({id: id, title: title, isDone: true || false}); 
       });
     //Activar el modo edición desde la tarea
     newRow.firstElementChild?.lastElementChild?.addEventListener("focus", async (e: Event) => {
@@ -92,8 +97,11 @@ export class App {
       // let updateTask: dataObjUpdate = await Fetch.update({id: this.idGenerator()}); 
       // if (update !== updateTask.title) {
       //   // let updateTask: dataObjUpdate = await Fetch.update({id: this.idGenerator()});
-      //   this.renderTasksUpdate([updateTask]);
+      //   // updateTask.title = update;
+      //   // Fetch.update(updateTask);
       // }
+      //await Fetch.update({id: id, title: this.input!.value, isDone: isDone}); 
+      //Fetch.getAll();
     });
     //Desactivar el modo edición
     newRow.firstElementChild?.lastElementChild?.addEventListener("blur", (e: Event) => {
@@ -111,8 +119,7 @@ export class App {
       "click",
       async (e: Event) => {
         this.removeRow(e as MouseEvent, false);
-        let removeTask: dataObj = await Fetch.delete({id: this.idGenerator(), title: this.input!.value, isDone: false || true});
-        this.renderTasks([removeTask]);
+        await Fetch.delete({ id: id, title: this.input!.value, isDone: false || true }) as unknown as dataObjUpdate;
       }
     );
     return newRow;
@@ -125,27 +132,32 @@ export class App {
     });
   };
 
-  renderTasksUpdate = (tasks: dataObjUpdate[]): void => {
-    console.log(tasks.length);
-    tasks.forEach((task: dataObjUpdate) => {
-      this.table?.appendChild(this.generateRow(task.id, task.title!, task.isDone)); //Modificado done por isDone
-    });
-  };
   // //Tachado de tarea
   crossOut = (e: MouseEvent): void => {
-    // let target: HTMLElement = e.target;
-    // let task: HTMLInputElement = target?.nextElementSibling;
-    let task = (e.target as HTMLElement).nextElementSibling as HTMLSpanElement;
-    let text = task.innerHTML ?? ""; //Operador de fusión nula para proporcionar un valor predeterminado en caso de que sea null
-    if (text.includes("<del>")) {
-      text = (task.firstElementChild as HTMLElement)?.textContent ?? "";
-      task.innerHTML = text;
-      (task.parentNode?.parentNode as HTMLElement).setAttribute("data-completed", "false");
+    let task = ((e.target as HTMLElement).nextElementSibling as HTMLSpanElement).innerHTML as unknown as dataObjUpdate;
+    if (task.title?.includes("<del>")) {
+      Fetch.update({id: task.id, title: task.title, isDone: false});
     } else {
-      task.innerHTML = `<del>${text}</del>`;
-      (task.parentNode?.parentNode as HTMLElement).setAttribute("data-completed", "true");
+      //let title = `<del>${title}</del>`;
+      Fetch.update({id: task.id, title: task.title, isDone: true});
+      //task.innerHTML = `<del>${title}</del>`;
     }
   };
+  // crossOut = (e: MouseEvent): void => {
+  //   // let target: HTMLElement = e.target;
+  //   // let task: HTMLInputElement = target?.nextElementSibling;
+  //   let task = (e.target as HTMLElement).nextElementSibling as HTMLSpanElement;
+  //   let text = task.innerHTML ?? ""; //Operador de fusión nula para proporcionar un valor predeterminado en caso de que sea null
+  //   if (text.includes("<del>")) {
+  //     text = (task.firstElementChild as HTMLElement)?.textContent ?? "";
+  //     task.innerHTML = text;
+  //     task.isDone = true;
+  //     //(task.parentNode?.parentNode as HTMLElement).setAttribute("isDone", "false");
+  //   } else {
+  //     task.innerHTML = `<del>${text}</del>`;
+  //     //(task.parentNode?.parentNode as HTMLElement).setAttribute("isDone", "true");
+  //   }
+  // };
   //Añadir nueva tarea
   addTask = (input: HTMLInputElement | null, id: string, text: string, alert: HTMLDivElement | null): void => {
     if (input?.value.trim() === "") {
@@ -160,6 +172,7 @@ export class App {
   };
   //Modo Edición
   editModeOn = (e: Event, onFocus: boolean): void => {
+    e.preventDefault();
     let task: HTMLSpanElement;
     if (onFocus) {
       task = e.currentTarget as HTMLSpanElement;

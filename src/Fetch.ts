@@ -64,7 +64,7 @@ export class Fetch {
 
   //Eliminación de filas
   // static async delete(id: string) {
-  static async delete(task: dataObj) {
+  static async delete(task: dataObjUpdate) {
     const response: Response = await fetch(`${this.BASE_URL}/${task.id}`, {
       method: "DELETE", //
     });
