@@ -13,6 +13,7 @@ export class App {
   input: HTMLInputElement | null;
   arrow: HTMLDivElement | null;
   table: HTMLTableSectionElement | null;
+  allTasks: dataObj[] | null;
   
 
   constructor() {
@@ -21,6 +22,7 @@ export class App {
     this.input = document.querySelector("input");
     this.arrow = document.querySelector(".arrow");
     this.table = document.querySelector("tbody");
+    this.allTasks = null;
   };
 
   init = async () => {
@@ -36,16 +38,16 @@ export class App {
       if (e.code == "Enter" || e.code == "NumpadEnter") {
         e.preventDefault();
         this.addTask(this.input, this.idGenerator(), this.input!.value, this.alert);
-        let createTask: dataObj = await Fetch.create({id: this.idGenerator(), title: this.input!.value, isDone: false});
-        this.renderTasks([createTask]);
+        // let createTask: dataObj = await Fetch.create({id: this.idGenerator(), title: this.input!.value, isDone: false});
+        // this.renderTasks([createTask]);
       }
     });
     
     //Añadir una nueva tarea
     this.arrow?.addEventListener("click", async (): Promise<void> => {
       this.addTask(this.input, this.idGenerator(), this.input!.value, this.alert);
-      let createTask: dataObj = await Fetch.create({id: this.idGenerator(), title: this.input!.value, isDone: false});
-      this.renderTasks([createTask]);
+      // let createTask: dataObj = await Fetch.create({id: this.idGenerator(), title: this.input!.value, isDone: false});
+      // this.renderTasks([createTask]);
     });
 
     //Tarea vacía alerta roja
@@ -159,15 +161,29 @@ export class App {
   //   }
   // };
   //Añadir nueva tarea
-  addTask = (input: HTMLInputElement | null, id: string, text: string, alert: HTMLDivElement | null): void => {
+  addTask = async (input: HTMLInputElement | null, id: string, text: string, alert: HTMLDivElement | null) => { //Por qué no se pone tipado a la función? Porque no es una función que se vaya a exportar, pero por que? Porque no se va a usar fuera de la clase. Entonces cuando tengo que tipar una función? Cuando la voy a exportar.
     if (input?.value.trim() === "") {
       input.value = "";
       alert?.classList.remove("dismissible");
     } else {
       text = input!.value; //Operador de aserción no nulo para asegurar que no es null
-      id = this.idGenerator();
-      document.querySelector("tbody")?.appendChild(this.generateRow(this.idGenerator(), this.input!.value));
-      //input!.value = ""; //Volver a añadir, resetea el input (ahora se resetea por la recarga de la página)
+      // id = this.idGenerator();
+      // document.querySelector("tbody")?.appendChild(this.generateRow(this.idGenerator(), this.input!.value));
+      // input!.value = ""; //Volver a añadir, resetea el input (ahora se resetea por la recarga de la página);
+      try {
+        let createTask: dataObj = await Fetch.create({id: this.idGenerator(), title: this.input!.value, isDone: false});
+        if (createTask) {
+          this.allTasks = await Fetch.getAll();
+          this.renderTasks(this.allTasks);
+        } else {
+          throw new Error("No se ha podido añadir la tarea");
+        }
+      } catch (error: any) {
+        if (alert) {
+          alert.textContent = error.message;
+          alert.classList.remove("dismissible");
+        }
+      }
     }
   };
   //Modo Edición
