@@ -44,6 +44,7 @@ export class Fetch {
     return data;
   }
 
+  
   //Tipado parcial para actualizar solo ciertos campos
   static async update(task: dataObjUpdate) {
     const response: Response = await fetch(`${this.BASE_URL}/${task.id}`, {

@@ -192,6 +192,7 @@ export class App {
     return newRow;
   };
 
+  
   renderTasks = (tasks: dataObj[]): void => {
     console.log(tasks.length);
     if (this.table !== null) {
