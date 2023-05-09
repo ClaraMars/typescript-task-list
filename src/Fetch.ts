@@ -1,15 +1,15 @@
 export interface dataObj {
-  id: string,
-  title: string,
-  isDone: boolean
+  id: string;
+  title: string;
+  isDone: boolean;
 }
 
 // export type Data = dataObj[];
 
 export interface dataObjUpdate {
-  id: string,
-  title?: string,
-  isDone?: boolean
+  id: string;
+  title?: string;
+  isDone?: boolean;
 }
 
 export class Fetch {
@@ -46,7 +46,8 @@ export class Fetch {
 
   //Tipado parcial para actualizar solo ciertos campos
   static async update(task: dataObjUpdate) {
-    const response: Response = await fetch(`${this.BASE_URL}/${task.id}`, { //Actualiza el db.json
+    const response: Response = await fetch(`${this.BASE_URL}/${task.id}`, {
+      //Actualiza el db.json
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -74,4 +75,4 @@ export class Fetch {
       );
     }
   }
-};
+}
