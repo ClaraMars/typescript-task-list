@@ -1,15 +1,16 @@
+
 export interface dataObj {
-  id: string,
-  title: string,
-  isDone: boolean
+  id: string;
+  title: string;
+  isDone: boolean;
 }
 
 // export type Data = dataObj[];
 
 export interface dataObjUpdate {
-  id: string,
-  title?: string,
-  isDone?: boolean
+  id: string;
+  title?: string;
+  isDone?: boolean;
 }
 
 export class Fetch {
@@ -44,9 +45,11 @@ export class Fetch {
     return data;
   }
 
+  
   //Tipado parcial para actualizar solo ciertos campos
   static async update(task: dataObjUpdate) {
-    const response: Response = await fetch(`${this.BASE_URL}${task.id}`, { //Actualiza el db.json
+    const response: Response = await fetch(`${this.BASE_URL}/${task.id}`, {
+      //Actualiza el db.json
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -58,13 +61,14 @@ export class Fetch {
         `Error al actualizar la tarea: ${response.status} ${response.statusText}`
       );
     }
-    const data: dataObj = await response.json();
+    const data: dataObjUpdate = await response.json();
     return data;
   }
 
   //Eliminación de filas
-  static async delete(id: string) {
-    const response: Response = await fetch(`${this.BASE_URL}${id}`, {
+  // static async delete(id: string) {
+  static async delete(task: dataObjUpdate) {
+    const response: Response = await fetch(`${this.BASE_URL}/${task.id}`, {
       method: "DELETE", //
     });
     if (!response.ok) {
@@ -73,6 +77,4 @@ export class Fetch {
       );
     }
   }
-};
-
-// module.exports = Fetch;
+}

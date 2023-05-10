@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "mock": "node Utils/tasksGenerator.js",
     "start": "json-server --watch db.json --port 8000"
   },
   "author": "Antonio Cebrián (Ch3ssMaster)",

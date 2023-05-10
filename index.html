@@ -10,10 +10,18 @@
       crossorigin="anonymous"
     ></script>
     <link rel="stylesheet" href="css/style.css" />
+    <!-- <link rel="stylesheet" href="css/style.min.css" /> -->
   </head>
   <body>
     <div class="main">
-      <h1>Task List</h1>
+      <header>
+        <h1>Task List</h1>
+        <div>
+          <button class="active">All</button>
+          <button>Done</button>
+          <button>Undone</button>
+        </div>
+      </header>
       <div class="alert dismissible">
         Please, insert some text.
         <i class="fa-solid fa-square-xmark"></i>
@@ -40,11 +48,13 @@
               <th>Delete</th>
             </tr>
           </thead>
-          <tbody>
-          </tbody>
+          <tbody></tbody>
         </table>
       </div>
     </div>
     <script type="module" src="dist/index.js"></script>
+    <!-- <script type="module" src="dist/index.min.js"></script> -->
   </body>
 </html>
+
+

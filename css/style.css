@@ -11,6 +11,7 @@
   --light-blue: #bee5e3;
   --light-blue-hover: #a8d8d6;
   --medium-blue: #2980b9;
+  --dark-medium-blue: #1f6fb2;
   --pink: #d63384;
   --red: #dc3545;
   --red-hover: #bd2130;
@@ -22,6 +23,8 @@
   --green-hover: #117a4b;
   --dark: #292a2b;
 }
+
+
 
 *,
 ::after,
@@ -64,7 +67,36 @@ h1 {
   margin: 10% auto;
   background-color: white;
 }
-
+.main header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.main header div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.main header div button {
+  background-color: var(--medium-blue);
+  color: white;
+  padding: 0.5em 1em;
+  font-size: 1.1rem;
+}
+.main header div button.active,
+.main header div button:hover,
+.main header div button:focus, 
+.main header div button:active {
+  background-color: var(--dark-medium-blue);
+}
+.main header div button:first-of-type {
+  border-top-left-radius: 0.3rem;
+  border-bottom-left-radius: 0.3rem;
+}
+.main header div button:nth-child(3) {
+  border-top-right-radius: 0.3rem;
+  border-bottom-right-radius: 0.3rem;
+}
 .main .container {
   overflow-x: auto;
 }
@@ -287,7 +319,8 @@ table .fa-circle-check:hover {
   opacity: 0 !important;
   height: 0 !important;
   padding: 0 !important;
-  -webkit-transition: opacity 0.15s linear, height 0.3s linear, padding 0.3s linear;
+  -webkit-transition: opacity 0.15s linear, height 0.3s linear,
+    padding 0.3s linear;
   transition: opacity 0.15s linear, height 0.3s linear, padding 0.3s linear;
 }
 
